@@ -3,7 +3,7 @@
 
 This repository contains links to training state hosted on MEGA. You can download them using the links below.
 
-## Available Models
+## Available States
 
 - **500.state**  
   [Download Link](https://mega.nz/file/34xX3B4J#A6G8M5L-KAgi9Ee2dmCgMb_z9F7LSDiQkazPDgyOn2E)
