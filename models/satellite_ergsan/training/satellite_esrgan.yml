@@ -1,0 +1,89 @@
+name: satellite_esrgan
+model_type: ESRGANModel
+scale: 4
+num_gpu: 0  # CPU mode; switch to GPU when ready
+
+datasets:
+  train:
+    name: satellite
+    type: PairedImageDataset
+    dataroot_gt: datasets/satellite/HR
+    dataroot_lq: datasets/satellite/LR_fixed
+    io_backend:
+      type: disk
+    gt_size: 64
+    use_hflip: true
+    use_rot: true
+    filename_tmpl: '{}'
+    batch_size_per_gpu: 1
+    num_worker_per_gpu: 0
+
+network_g:
+  type: RRDBNet
+  num_in_ch: 3
+  num_out_ch: 3
+  num_feat: 64
+  num_block: 23
+  num_grow_ch: 32
+  scale: 4
+network_d:
+  type: UNetDiscriminatorSN
+  num_in_ch: 3
+  num_feat: 64
+
+path:
+  pretrain_network_g: ~
+  strict_load_g: true
+  resume_state: ~
+
+train:
+  total_iter: 500
+  warmup_iter: -1
+  optim_g:
+    type: Adam
+    lr: !!float 1e-4
+    weight_decay: 0
+
+  optim_d:
+    type: Adam
+    lr: !!float 1e-4
+    weight_decay: 0
+
+  scheduler:
+    type: MultiStepLR
+    milestones: [200, 400]
+    gamma: 0.5
+
+  pixel_opt:
+    type: L1Loss
+    loss_weight: 1.0
+    reduction: mean
+  gan_opt:
+    type: GANLoss
+    gan_type: vanilla  # or 'lsgan' / 'ragan' depending on what ESRGAN expects
+    loss_weight: 0.005
+
+  val_freq: 100
+
+val:
+  val_freq: 100
+  val_dataset:
+    name: satellite_val
+    type: PairedImageDataset
+    dataroot_gt: datasets/satellite/HR
+    dataroot_lq: datasets/satellite/LR
+    io_backend:
+      type: disk
+    filename_tmpl: '{}'
+  metrics:
+    psnr:
+      type: calculate_psnr
+      crop_border: 4
+    ssim:
+      type: calculate_ssim
+      crop_border: 4
+
+logger:
+  print_freq: 10
+  save_checkpoint_freq: 100
+  use_tb_logger: false
