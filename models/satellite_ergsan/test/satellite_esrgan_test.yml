@@ -1,0 +1,31 @@
+name: satellite_esrgan_test
+model_type: ESRGANModel
+scale: 4
+num_gpu: 0 
+
+
+datasets:
+  test:
+    name: satellite_test
+    type: SingleImageDataset
+    dataroot_lq: datasets/satellite/LR
+    io_backend:
+      type: disk
+
+network_g:
+  type: RRDBNet
+  num_in_ch: 3
+  num_out_ch: 3
+  num_feat: 64
+  num_block: 23
+  num_grow_ch: 32
+  scale: 4
+
+path:
+  pretrain_network_g: experiments/satellite_esrgan/models/net_g_latest.pth
+  strict_load_g: true
+
+val:
+  save_img: true
+  suffix: ~
+  metrics: {}
