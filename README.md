@@ -24,6 +24,7 @@ This project applies **ESRGAN** (Enhanced Super-Resolution GAN) using the [Basic
 
 
 ```python
+#install these dependencies
 !pip install basicsr
 !pip install facexlib gfpgan
 ```
